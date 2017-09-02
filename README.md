@@ -46,18 +46,18 @@ The following was learned by reading through serial port dumps.
 
 ### Known PayloadTypes
 * 0x62: text log:
-** TickCount (4): ms since boot
-** Unknown (4)
-** Text Data (x): zero padded, so length % 4 == 0
+  * TickCount (4): ms since boot
+  * Unknown (4)
+  * Text Data (x): zero padded, so length % 4 == 0
 
 * 0x65: extended text log:
-** Unknown (4)
-** TickCount (4): ms since boot
-** Unknown (4)
-** Text Data (x): zero padded, so length % 4 == 0
+  * Unknown (4)
+  * TickCount (4): ms since boot
+  * Unknown (4)
+  * Text Data (x): zero padded, so length % 4 == 0
 
 * 0x78: boot banner (?): sent on boot once
-** Unknown (4); example: `08 00 08 00`
+  * Unknown (4); example: `08 00 08 00`
 
 * 0x83: boot info / HW/SW info (?): sent on boot once
-** Unknown (24); example: `02 00 00 00 10 00 00 00 10 00 00 00 01 00 00 00 01 00 00 00 FF FF FF FF`
+  * Unknown (24); example: `02 00 00 00 10 00 00 00 10 00 00 00 01 00 00 00 01 00 00 00 FF FF FF FF`
