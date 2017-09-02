@@ -27,6 +27,8 @@ void DumpFromSerialPort(const char *Name, SWatch::MessageExtractor &Parser, SWat
 	boost::asio::io_service IOS;
 	boost::asio::serial_port Port(IOS);
 
+	std::string PrevErrorMsg;
+
 	constexpr size_t ReadBuffSize = 2048;
 	std::unique_ptr<unsigned char[]> ReadBuff(new unsigned char[ReadBuffSize]);
 	while (true)
@@ -40,6 +42,7 @@ void DumpFromSerialPort(const char *Name, SWatch::MessageExtractor &Parser, SWat
 			Port.set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port::parity::none));
 			Port.set_option(boost::asio::serial_port_base::flow_control(boost::asio::serial_port::flow_control::none));
 
+			PrevErrorMsg.clear();
 			while (true)
 			{
 				size_t ReadCount = Port.read_some(boost::asio::buffer(ReadBuff.get(), ReadBuffSize));
@@ -51,7 +54,15 @@ void DumpFromSerialPort(const char *Name, SWatch::MessageExtractor &Parser, SWat
 		}
 		catch (const std::exception &Ex)
 		{
-			std::cerr << "Caught exception(" << typeid(Ex).name() << "): " << Ex.what() << std::endl;
+			std::ostringstream ErrS;
+			ErrS << "Caught exception(" << typeid(Ex).name() << "): " << Ex.what();
+			std::string ErrMsg = ErrS.str();
+			if (ErrMsg != PrevErrorMsg)
+			{
+				std::cerr << ErrMsg << std::endl;
+				PrevErrorMsg = ErrMsg;
+			}
+
 			Port.close();
 		}
 	}
