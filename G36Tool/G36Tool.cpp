@@ -38,8 +38,26 @@ void OnMessage(const SWatch::Msg::ExtLog &Msg)
 	std::cout << "\n";
 }
 
+void OnMessage(const SWatch::Msg::MessageBase &Msg)
+{
+	static const char HexA[] = { "0123456789abcdef" };
+
+	std::cout << "x" << std::hex << (int)Msg.type() << std::dec << "  hex(";
+	const unsigned char *Begin, *End;
+	std::tie(Begin, End) = Msg.raw_data();
+	for (; Begin != End; ++Begin)
+	{
+		auto Val = *Begin;
+		std::cout.write(HexA + (Val >> 4), 1);
+		std::cout.write(HexA + (Val & 0xF), 1);
+		std::cout.write(" ", 1);
+	}
+
+	std::cout << ")\n";
+}
+
 template<class MsgType>
-void OnGenericMessage(const MsgType &Msg)
+void OnTypedMessage(const MsgType &Msg)
 {
 	if (Msg.size() >= MsgType::min_size)
 		OnMessage(Msg);
@@ -59,16 +77,19 @@ void OnRawMessage(bool CrcValid, const unsigned char *Begin, const unsigned char
 	switch (Msg.type())
 	{
 	case SWatch::Msg::BootBanner::type_code:
-		OnGenericMessage((const SWatch::Msg::BootBanner &)Msg);
+		OnTypedMessage((const SWatch::Msg::BootBanner &)Msg);
 		break;
 	case SWatch::Msg::BootInfo::type_code:
-		OnGenericMessage((const SWatch::Msg::BootInfo &)Msg);
+		OnTypedMessage((const SWatch::Msg::BootInfo &)Msg);
 		break;
 	case SWatch::Msg::Log::type_code:
-		OnGenericMessage((const SWatch::Msg::Log &)Msg);
+		OnTypedMessage((const SWatch::Msg::Log &)Msg);
 		break;
 	case SWatch::Msg::ExtLog::type_code:
-		OnGenericMessage((const SWatch::Msg::ExtLog &)Msg);
+		OnTypedMessage((const SWatch::Msg::ExtLog &)Msg);
+		break;
+	default:
+		OnMessage(Msg);
 		break;
 	}
 }
