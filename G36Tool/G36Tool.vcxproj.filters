@@ -2,9 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="G36Tool.cpp" />
+    <ClCompile Include="MessageDumper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageExtractor.h" />
+    <ClInclude Include="MessageDumper.h" />
   </ItemGroup>
 </Project>

@@ -152,9 +152,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="G36Tool.cpp" />
+    <ClCompile Include="MessageDumper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Message.h" />
+    <ClInclude Include="MessageDumper.h" />
     <ClInclude Include="MessageExtractor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
