@@ -61,7 +61,8 @@ int main(int argc, char **argv)
 {
 	if (argc < 2)
 	{
-		std::cout << "Usage: " << *argv << " filename_or_serialport\n";
+		std::cout << "Usage: " << *argv << " filename_or_serialport\n"
+			"prefix with ':' to explicitly use a serial port.\n";
 		return 1;
 	}
 
@@ -69,12 +70,22 @@ int main(int argc, char **argv)
 	SWatch::MessageDumper Dumper(std::cout);
 
 	boost::filesystem::path SrcFN(argv[1]);
-	if ((boost::filesystem::exists(SrcFN)) && (boost::filesystem::status(SrcFN).type() != boost::filesystem::character_file))
+	auto SourceStatus = boost::filesystem::status(SrcFN);
+	if ((*argv[1]!=':') &&
+		(SourceStatus.type()!= boost::filesystem::file_not_found) &&
+		(SourceStatus.type() != boost::filesystem::status_error) &&
+		(boost::filesystem::status(SrcFN).type() != boost::filesystem::character_file))
 		//Treat SrcFN as a normal file.
 		DumpFromFile(SrcFN, Parser, Dumper);
 	else
+	{
 		//Treat SrcFN as a serial port.
-		DumpFromSerialPort(argv[1], Parser, Dumper);
+		const char *SourceFileName = argv[1];
+		if (*SourceFileName == ':')
+			++SourceFileName;
+
+		DumpFromSerialPort(SourceFileName, Parser, Dumper);
+	}
 
 	return 0;
 }
