@@ -13,6 +13,7 @@ public:
 	inline MessageDumper(std::ostream &Target) : Target(Target) { }
 
 	void operator()(bool CrcValid, const unsigned char *Begin, const unsigned char *End);
+	inline void flush() { Target.flush(); }
 
 private:
 	std::ostream &Target;
